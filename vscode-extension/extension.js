@@ -292,6 +292,7 @@ function pathDelimiter() {
 }
 
 function activate(context) {
+  console.log('[Local AI Agent] activate() called');
   const backend = new AgentBackend(context);
   const provider = new ChatViewProvider(context, backend);
 
