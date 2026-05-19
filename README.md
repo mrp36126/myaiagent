@@ -50,6 +50,9 @@ Inside the agent:
 /search functionName   Search the workspace using ripgrep if available
 /tree                  Show a compact project tree
 /run pytest            Run a local command and load output into context
+/patch README.md :: improve the usage section
+/apply                 Apply the currently proposed patch
+/discard               Discard the currently proposed patch
 /clear                 Clear conversation context
 /exit                  Quit
 ```
@@ -72,7 +75,31 @@ This first version is intentionally conservative:
 
 - It only reads files inside the configured workspace.
 - It skips common heavy/private directories like `.git`, `node_modules`, `.venv`, and `dist`.
-- It does not auto-edit files yet.
+- It proposes file edits as diffs before writing anything.
+- It only writes a proposed patch when you run `/apply`.
+- It refuses to apply a patch if the file changed after the proposal was created.
 - `/run` executes commands locally, so use it the same way you would use a terminal.
 
-Next recommended feature: add patch proposal and reviewed patch application.
+## Safe Editing
+
+Use `/patch` with a file path, then `::`, then the change you want:
+
+```text
+/patch README.md :: add a short troubleshooting section for Ollama PATH issues
+```
+
+The agent asks the local model for a complete replacement file, compares it to the current file, and prints a unified diff. Nothing is written yet.
+
+If the diff looks good:
+
+```text
+/apply
+```
+
+If it looks wrong:
+
+```text
+/discard
+```
+
+This workflow is intentionally cautious because small local models can occasionally produce messy edits.

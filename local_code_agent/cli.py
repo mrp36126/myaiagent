@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+from dataclasses import dataclass
 
 from .config import AgentConfig, load_config
 from .llm import OllamaClient, OllamaError
 from .prompts import SYSTEM_PROMPT
+from .tools.edit import PendingEdit, apply_edit, propose_edit
 from .tools.files import project_tree, read_file
 from .tools.search import search_code
 from .tools.shell import run_command
@@ -18,9 +20,17 @@ HELP_TEXT = """Commands:
   /search <query>        Search workspace and load results into context
   /tree                  Load compact project tree into context
   /run <command>         Run a local command and load output into context
+  /patch <path> :: <task> Propose a safe file edit and show a diff
+  /apply                 Apply the currently proposed patch
+  /discard               Discard the currently proposed patch
   /clear                 Clear conversation context
   /exit                  Quit
 """
+
+
+@dataclass
+class CliState:
+    pending_edit: PendingEdit | None = None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -51,7 +61,13 @@ def print_agent(text: str) -> None:
     print(text)
 
 
-def handle_command(config: AgentConfig, messages: list[dict[str, str]], raw: str) -> bool:
+def handle_command(
+    config: AgentConfig,
+    client: OllamaClient,
+    messages: list[dict[str, str]],
+    state: CliState,
+    raw: str,
+) -> bool:
     command, _, value = raw.partition(" ")
     value = value.strip()
 
@@ -108,6 +124,46 @@ def handle_command(config: AgentConfig, messages: list[dict[str, str]], raw: str
         print("Loaded command output into context.")
         return True
 
+    if command == "/patch":
+        if "::" not in value:
+            print("Usage: /patch <path> :: <task>")
+            return True
+        path, _, instruction = value.partition("::")
+        path = path.strip()
+        instruction = instruction.strip()
+        if not path or not instruction:
+            print("Usage: /patch <path> :: <task>")
+            return True
+
+        print(f"Proposing edit for: {path}")
+        edit = propose_edit(config, client, path, instruction)
+        state.pending_edit = edit
+        print("\nProposed diff:")
+        print(edit.diff)
+        if edit.diff == "No changes proposed.":
+            print("Nothing to apply.")
+        else:
+            print("Review the diff. Run /apply to write it, or /discard to throw it away.")
+        return True
+
+    if command == "/apply":
+        if state.pending_edit is None:
+            print("No pending patch. Use /patch <path> :: <task> first.")
+            return True
+        apply_edit(config, state.pending_edit)
+        print(f"Applied patch: {state.pending_edit.path}")
+        add_context(messages, f"Applied patch to `{state.pending_edit.path}`:", state.pending_edit.diff)
+        state.pending_edit = None
+        return True
+
+    if command == "/discard":
+        if state.pending_edit is None:
+            print("No pending patch to discard.")
+            return True
+        print(f"Discarded patch: {state.pending_edit.path}")
+        state.pending_edit = None
+        return True
+
     return False
 
 
@@ -121,6 +177,7 @@ def ask_once(client: OllamaClient, messages: list[dict[str, str]], user_message:
 def interactive(config: AgentConfig) -> int:
     client = OllamaClient(config)
     messages = new_messages()
+    state = CliState()
 
     print("Local AI Coding Agent")
     print(f"Model: {config.model}")
@@ -133,7 +190,7 @@ def interactive(config: AgentConfig) -> int:
             if not raw:
                 continue
 
-            if raw.startswith("/") and handle_command(config, messages, raw):
+            if raw.startswith("/") and handle_command(config, client, messages, state, raw):
                 continue
 
             answer = ask_once(client, messages, raw)

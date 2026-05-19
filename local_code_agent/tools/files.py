@@ -70,6 +70,24 @@ def read_file(config: AgentConfig, user_path: str) -> str:
     return truncated
 
 
+def read_file_full(config: AgentConfig, user_path: str) -> str:
+    path = resolve_workspace_path(config, user_path)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {user_path}")
+    if not path.is_file():
+        raise ValueError(f"Not a file: {user_path}")
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def write_file(config: AgentConfig, user_path: str, content: str) -> None:
+    path = resolve_workspace_path(config, user_path)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {user_path}")
+    if not path.is_file():
+        raise ValueError(f"Not a file: {user_path}")
+    path.write_text(content, encoding="utf-8")
+
+
 def project_tree(config: AgentConfig, max_entries: int = 250) -> str:
     entries: list[str] = []
     root = config.workspace
