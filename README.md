@@ -103,3 +103,28 @@ If it looks wrong:
 ```
 
 This workflow is intentionally cautious because small local models can occasionally produce messy edits.
+
+## VS Code Extension Mode
+
+This repo also includes a local VS Code extension so the agent can appear in the Activity Bar as **Local Agent**.
+
+To run it in development mode:
+
+1. Open this repo in VS Code.
+2. Press `F5`, or open **Run and Debug** and choose **Run Local AI Agent Extension**.
+3. A new VS Code Extension Development Host window opens.
+4. In that new window, click the **Local Agent** icon in the Activity Bar.
+
+The sidebar supports the same core commands:
+
+```text
+/tree
+/read README.md
+/search Ollama
+/run python -m compileall -q local_code_agent
+/patch README.md :: improve the introduction
+```
+
+When a patch is proposed, use the **Apply** or **Discard** buttons in the sidebar.
+
+No paid API is used. The extension starts the local Python backend and talks to your local Ollama model.

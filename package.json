@@ -1,0 +1,66 @@
+{
+  "name": "my-local-ai-agent",
+  "displayName": "My Local AI Agent",
+  "description": "A free local VS Code coding agent powered by Ollama and your Python workspace agent.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onView:myLocalAgent.chatView",
+    "onCommand:myLocalAgent.focus"
+  ],
+  "main": "./vscode-extension/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "myLocalAgent.focus",
+        "title": "Local AI Agent: Open Chat"
+      },
+      {
+        "command": "myLocalAgent.restart",
+        "title": "Local AI Agent: Restart Backend"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "myLocalAgent",
+          "title": "Local Agent",
+          "icon": "vscode-extension/media/agent.svg"
+        }
+      ]
+    },
+    "views": {
+      "myLocalAgent": [
+        {
+          "id": "myLocalAgent.chatView",
+          "name": "Chat"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "My Local AI Agent",
+      "properties": {
+        "myLocalAgent.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Python executable used to start the local agent backend."
+        },
+        "myLocalAgent.model": {
+          "type": "string",
+          "default": "qwen2.5-coder:3b",
+          "description": "Ollama model name for the local agent."
+        },
+        "myLocalAgent.ollamaUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Ollama server URL."
+        }
+      }
+    }
+  }
+}
