@@ -9,13 +9,13 @@ A free, local-first coding assistant that talks to Ollama, reads your codebase, 
 - A local coding model, for example:
 
 ```powershell
-ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:3b
 ```
 
-For a weaker machine:
+If you have more RAM/VRAM, try the larger 7B model:
 
 ```powershell
-ollama pull qwen2.5-coder:3b
+ollama pull qwen2.5-coder:7b
 ```
 
 Optional but recommended for fast code search:
@@ -61,7 +61,7 @@ Anything else is sent to the local model as a normal chat message.
 Environment variables:
 
 ```text
-LOCAL_AGENT_MODEL=qwen2.5-coder:7b
+LOCAL_AGENT_MODEL=qwen2.5-coder:3b
 LOCAL_AGENT_OLLAMA_URL=http://localhost:11434
 LOCAL_AGENT_WORKSPACE=.
 ```

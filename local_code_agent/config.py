@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-DEFAULT_MODEL = "qwen2.5-coder:7b"
+DEFAULT_MODEL = "qwen2.5-coder:3b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 
 DEFAULT_IGNORE_DIRS = {
