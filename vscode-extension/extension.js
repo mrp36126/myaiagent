@@ -112,6 +112,7 @@ class ChatViewProvider {
   }
 
   resolveWebviewView(webviewView) {
+    console.log('[Local AI Agent] resolveWebviewView() called');
     this.view = webviewView;
     webviewView.webview.options = { enableScripts: true };
     webviewView.webview.html = this.getHtml(webviewView.webview);
@@ -296,6 +297,7 @@ function activate(context) {
   const backend = new AgentBackend(context);
   const provider = new ChatViewProvider(context, backend);
 
+  console.log('[Local AI Agent] registering myLocalAgent.chatView provider');
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('myLocalAgent.chatView', provider),
     vscode.commands.registerCommand('myLocalAgent.focus', async () => {
