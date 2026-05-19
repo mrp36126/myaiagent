@@ -1,0 +1,13 @@
+[project]
+name = "myaiagent"
+version = "0.1.0"
+description = "A free local AI coding agent powered by Ollama."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+myaiagent = "local_code_agent.cli:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
