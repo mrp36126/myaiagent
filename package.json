@@ -5,10 +5,16 @@
   "version": "0.1.0",
   "publisher": "local",
   "private": true,
+  "scripts": {
+    "package": "vsce package --allow-missing-repository",
+    "install:vsix": "code --install-extension my-local-ai-agent-0.1.0.vsix --force"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "activationEvents": [
     "onView:myLocalAgent.chatView",
     "onCommand:myLocalAgent.focus"
@@ -62,5 +68,11 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.9.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.0"
   }
 }
