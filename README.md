@@ -128,3 +128,7 @@ The sidebar supports the same core commands:
 When a patch is proposed, use the **Apply** or **Discard** buttons in the sidebar.
 
 No paid API is used. The extension starts the local Python backend and talks to your local Ollama model.
+
+## Handwriting ICR Workflow
+
+For scanned forms and handwriting recognition, see [docs/handwriting-icr-pipeline.md](docs/handwriting-icr-pipeline.md). It outlines the upload, preprocessing, layout parsing, field cropping, ICR, review, export, and correction-training loop.
