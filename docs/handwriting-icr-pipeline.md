@@ -2,6 +2,8 @@
 
 This pipeline treats handwriting recognition as a full document workflow, not a single model call. The model only reads already-isolated fields; preprocessing, layout parsing, confidence checks, and human review do the rest of the accuracy work.
 
+The first implementation scaffold lives in `local_code_agent/icr_pipeline.py`. It preserves table columns, classifies blank cells before recognition, skips ICR for confidently blank optional cells, and exports those cells as empty values.
+
 ## Target Flow
 
 ```text
